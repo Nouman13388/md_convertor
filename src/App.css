@@ -1,17 +1,39 @@
-.main-layout{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+body {
+  margin: 0;
+  border: 0;
+  background-color: #f9fafb;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  color: #333;
 }
 
-.editor{
-  display: flex;
-  flex-direction: column;
-  width: 50%;
+textarea {
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: large;
+  padding: 1rem;
+  width: 100%;
+  height: 100%;
 }
 
-.preview{
+.main-layout {
+  display: flex;
+  height: 100vh;
+  padding: 1.25rem;
+  gap: 1.25rem;
+  max-width: 87.5rem;
+  margin: 0 auto;
+}
+
+.editor,
+.preview {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  width: 50%;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 1rem;
+  overflow: auto;
 }

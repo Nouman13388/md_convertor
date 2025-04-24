@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Editor from "./Editor";
 import Preview from "./Preview";
 
 function Home() {
   const [text, setText] = useState("");
-
   const handleChange = (e) => {
     setText(e.target.value);
   };
@@ -20,16 +19,18 @@ function Home() {
       if (line.startsWith("###")) return "<h3>" + line.substring(3) + "</h3>";
       if (line.startsWith("##")) return "<h2>" + line.substring(2) + "</h2>";
       if (line.startsWith("#")) return "<h1>" + line.substring(1) + "</h1>";
-
       if (line.startsWith("**") && line.endsWith("**")) {
         return "<p><b>" + line.substring(2, line.length - 2) + "</b></p>";
       }
-
       if (line.startsWith("*") && line.endsWith("*")) {
         return "<p><i>" + line.substring(1, line.length - 1) + "</i></p>";
       }
-
-      return line;
+      if (line.startsWith("[")) {
+        const linkText = line.substring(1, line.indexOf("]"));
+        const url = line.substring(line.indexOf("(") + 1, line.indexOf(")"));
+        return `<a href="${url}" target="_blank">${linkText}</a>`;
+      }
+      if (line) return line;
     });
 
     return processedLines.join("<br>");
