@@ -19,6 +19,7 @@ textarea {
 
 .main-layout {
   display: flex;
+  flex-direction: row;
   height: 100vh;
   padding: 1.25rem;
   gap: 1.25rem;
@@ -28,9 +29,9 @@ textarea {
 
 .editor,
 .preview {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  width: 50%;
   border-radius: 0.5rem;
   box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
   background-color: #fff;

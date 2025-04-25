@@ -9,7 +9,9 @@ function Home() {
   };
 
   const handleData = () => {
+
     const lines = text.split("\n");
+    console.log('Before processing',lines)
 
     const processedLines = lines.map((line) => {
       if (line.startsWith("######"))
@@ -30,8 +32,18 @@ function Home() {
         const url = line.substring(line.indexOf("(") + 1, line.indexOf(")"));
         return `<a href="${url}" target="_blank">${linkText}</a>`;
       }
+      if (line.startsWith("![")) {
+        const altText = line.substring(2, line.indexOf("]"));
+        const url = line.substring(line.indexOf("(") + 1, line.indexOf(")"));
+        return `<img src="${url}" alt="${altText}" />`;
+      }
+      if (line.startsWith("`")) {
+        return "<code>" + line.substring(1, line.length) + "</code>";
+      }
       if (line) return line;
     });
+
+    console.log('Processed Lines',processedLines);
 
     return processedLines.join("<br>");
   };
