@@ -9,11 +9,10 @@ function Home() {
   };
 
   const handleData = () => {
-
     const lines = text.split("\n");
-    console.log('Before processing',lines)
+    console.log("Before Conversion", lines);
 
-    const processedLines = lines.map((line) => {
+    const convertedLines = lines.map((line) => {
       if (line.startsWith("######"))
         return "<h6>" + line.substring(6) + "</h6>";
       if (line.startsWith("#####")) return "<h5>" + line.substring(5) + "</h5>";
@@ -43,9 +42,9 @@ function Home() {
       if (line) return line;
     });
 
-    console.log('Processed Lines',processedLines);
+    console.log("After Conversion", convertedLines);
 
-    return processedLines.join("<br>");
+    return convertedLines.join("<br>");
   };
 
   return (
