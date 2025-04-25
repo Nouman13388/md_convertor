@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Editor from "./Editor";
 import Preview from "./Preview";
+import Navbar from "./Navbar";
 
 function Home() {
   const [text, setText] = useState("");
@@ -48,10 +49,13 @@ function Home() {
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="main-layout">
       <Editor onChange={handleChange} />
       <Preview data={handleData} />
     </div>
+    </>
   );
 }
 
