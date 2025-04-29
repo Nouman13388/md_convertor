@@ -41,4 +41,5 @@ textarea {
   background-color: #fff;
   padding: 1rem;
   overflow: auto;
+  /* overflow: hidden; */
 }
