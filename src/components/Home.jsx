@@ -114,8 +114,8 @@ function Home() {
     <>
       <Navbar />
       <div className="main-layout">
-        <Editor updateText={handleText} />
-        <Preview data={handleData} />
+        <Editor onUpdateText={handleText} />
+        <Preview data={data} />
       </div>
     </>
   );

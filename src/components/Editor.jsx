@@ -1,8 +1,8 @@
-function Editor({ updateText }) {
+function Editor({ onUpdateText }) {
   return (
     <div className="editor">
       <h1>Text Editor</h1>
-      <textarea onChange={updateText} placeholder="Enter Text..." />
+      <textarea onChange={onUpdateText} placeholder="Enter Text..." />
     </div>
   );
 }
