@@ -24,8 +24,10 @@ const parseHeading = (line) => {
 
 const replaceBold = (text) => {
   const start = text.indexOf("**");
+  console.log('Staring Index:', start);
   if (start === -1) return text;
   const end = text.indexOf("**", start + 2);
+  console.log('Ending Index: ', end)
   if (end === -1) return text;
   return replaceBold(
     text.substring(0, start) +
@@ -36,8 +38,10 @@ const replaceBold = (text) => {
 
 const replaceItalic = (text) => {
   const start = text.indexOf("*");
+  console.log('Staring Index:', start);
   if (start === -1) return text;
   const end = text.indexOf("*", start + 1);
+  console.log('Ending Index: ', end)
   if (end === -1) return text;
   return replaceItalic(
     text.substring(0, start) +
@@ -115,7 +119,7 @@ function Home() {
       <Navbar />
       <div className="main-layout">
         <Editor updateText={handleText} />
-        <Preview data={handleData} />
+        <Preview data={data} />
       </div>
     </>
   );
