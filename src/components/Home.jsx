@@ -16,75 +16,13 @@ const parseHeading = (line) => {
   for (let i = 0; i < levels.length; i++) {
     const { prefix, tag } = levels[i];
     if (line.startsWith(prefix)) {
-      return `<${tag}>${line.substring(prefix.length)}</${tag}>`;
+      const content = line.slice(prefix.length);
+      return `<${tag}>${content}</${tag}>`;
     }
   }
+
   return null;
-}
-
-const replaceBold = (text) => {
-  const start = text.indexOf("**");
-  console.log('Staring Index:', start);
-  if (start === -1) return text;
-  const end = text.indexOf("**", start + 2);
-  console.log('Ending Index: ', end)
-  if (end === -1) return text;
-  return replaceBold(
-    text.substring(0, start) +
-      `<b> ${replaceBold(text.substring(start + 2, end))} </b>` +
-      text.substring(end + 2)
-  );
-}
-
-const replaceItalic = (text) => {
-  const start = text.indexOf("*");
-  console.log('Staring Index:', start);
-  if (start === -1) return text;
-  const end = text.indexOf("*", start + 1);
-  console.log('Ending Index: ', end)
-  if (end === -1) return text;
-  return replaceItalic(
-    text.substring(0, start) +
-      `<i> ${replaceItalic(text.substring(start + 1, end))} </i>` +
-      text.substring(end + 1)
-  );
-}
-
-const replaceImage = (text) => {
-  const start = text.indexOf("![");
-  if (start === -1) return text;
-  const altEnd = text.indexOf("]", start + start.length);
-  if (altEnd === -1) return text;
-  if (text.charAt(altEnd + 1) !== "(") return text;
-  const srcEnd = text.indexOf(")", altEnd + 2);
-  if (srcEnd === -1) return text;
-  const alt = text.substring(start + 2, altEnd);
-  const src = text.substring(altEnd + 2, srcEnd);
-  return replaceImage(
-    text.substring(0, start) +
-      `<img src="${src}" alt="${alt}" />` +
-      text.substring(srcEnd + 1)
-  );
-}
-
-const replaceLink = (text) => {
-  const start = text.indexOf("[");
-  if (start === -1) return text;
-  const end = text.indexOf("]", start);
-  if (end === -1) return text;
-  if (text.charAt(end + 1) !== "(") return text;
-  const srcEnd = text.indexOf(")", end + 2);
-  if (srcEnd === -1) return text;
-  const linkText = text.substring(start + 1, end);
-  const href = text.substring(end + 2, srcEnd);
-  return replaceLink(
-    text.substring(0, start) +
-      `<a href="${href}" target="_blank">` +
-      replaceLink(linkText) +
-      `</a>` +
-      text.substring(srcEnd + 1)
-  );
-}
+};
 
 const parseInline = (line) => {
   let processed = line;
@@ -92,26 +30,204 @@ const parseInline = (line) => {
   processed = replaceItalic(processed);
   processed = replaceImage(processed);
   processed = replaceLink(processed);
+  console.log("Processed Line: ", processed);
   return processed;
-}
+};
+
+const replaceBold = (text) => {
+  let result = "";
+  let stack = [];
+  let i = 0;
+  let starting_index,
+    closing_index = 0;
+
+  while (i < text.length) {
+    if (text[i] === "*" && text[i + 1] === "*") {
+      if (stack.length > 0 && stack[stack.length - 1] === "**") {
+        result += "</b>";
+        let temp_result = result.split("");
+        temp_result.splice(starting_index, 2, "<b>");
+        result = temp_result.join("");
+        console.log("Result Before pop: ", result);
+        closing_index = i;
+        console.log("Closing Index: ", closing_index);
+        console.log("Data in Closing Index: ", text[closing_index]);
+        stack.pop();
+        console.log("Stack after pop: ", stack);
+      } else {
+        console.log("Result Before push: ", result);
+        stack.push("**");
+        result += text[i] + text[i + 1];
+        starting_index = i;
+        console.log("Result After push: ", result);
+        console.log("Stack after push: ", stack);
+      }
+      i += 2;
+    } else {
+      result += text[i];
+      i++;
+    }
+  }
+
+  console.log("Total Iterations (Bold): ", i);
+  console.log("Total Lenght of String (Bold): ", text.length);
+
+  return result;
+};
+
+const replaceItalic = (text) => {
+  let result = "";
+  let stack = [];
+  let i = 0;
+  let starting_index,
+    closing_index = 0;
+
+  while (i < text.length) {
+    if (text[i] === "*" && text[i + 1] !== "*") {
+      if (stack.length > 0 && stack[stack.length - 1] === "*") {
+        result += "</i>";
+        let temp_result = result.split("");
+        temp_result.splice(starting_index, 1, "<i>");
+        result = temp_result.join("");
+        closing_index = i;
+        console.log("Closing Index: ", closing_index);
+        console.log("Data in Closing Index: ", text[closing_index]);
+        stack.pop();
+        console.log("Stack after pop: ", stack);
+      } else {
+        // result += "<i>";
+        stack.push("*");
+        result += text[i];
+        starting_index = i;
+        console.log("Result After push: ", result);
+        console.log("Stack after push: ", stack);
+      }
+      i++;
+    } else {
+      result += text[i];
+      i++;
+    }
+  }
+
+  console.log("Total Iterations (Italic): ", i);
+  console.log("Total Lenght of String (Italic): ", text.length);
+
+  return result;
+};
+
+const replaceLink = (text) => {
+  let result = "";
+  let i = 0;
+  let stack = [];
+
+  while (i < text.length) {
+    if (text[i] === "[") {
+      const textStart = i + 1;
+      const textEnd = text.indexOf("]", textStart);
+
+      if (text[textEnd + 1] !== "(") {
+        result += text[i];
+        i++;
+        continue;
+      }
+
+      const hrefStart = textEnd + 2;
+      const hrefEnd = text.indexOf(")", hrefStart);
+
+      if (hrefEnd === -1) {
+        result += text[i];
+        i++;
+        continue;
+      }
+
+      const label = text.slice(textStart, textEnd);
+      const href = text.slice(hrefStart, hrefEnd);
+
+      if (stack.length > 0 && stack[stack.length - 1] === "link") {
+        result += `</a>`;
+        stack.pop();
+      } else {
+        result += `<a href="${href}" target="_blank">${label}</a>`;
+        stack.push("link");
+      }
+
+      i = hrefEnd + 1;
+    } else {
+      result += text[i];
+      i++;
+    }
+  }
+
+  return result;
+};
+
+const replaceImage = (text) => {
+  let result = "";
+  let i = 0;
+  let stack = [];
+
+  while (i < text.length) {
+    if (text[i] === "!" && text[i + 1] === "[") {
+      const altStart = i + 2;
+      const altEnd = text.indexOf("]", altStart);
+
+      if (text[altEnd + 1] !== "(") {
+        result += text[i];
+        i++;
+        continue;
+      }
+
+      const srcStart = altEnd + 2;
+      const srcEnd = text.indexOf(")", srcStart);
+
+      if (srcEnd === -1) {
+        result += text[i];
+        i++;
+        continue;
+      }
+
+      const alt = text.slice(altStart, altEnd);
+      const src = text.slice(srcStart, srcEnd);
+
+      if (stack.length > 0 && stack[stack.length - 1] === "image") {
+        result += `</img>`;
+        stack.pop();
+      } else {
+        result += `<img src="${src}" alt="${alt}" />`;
+        stack.push("image");
+      }
+
+      i = srcEnd + 1;
+    } else {
+      result += text[i];
+      i++;
+    }
+  }
+
+  return result;
+};
 
 const parseMdToHtml = (text) => {
   return text
     .split("\n")
     .map((line) => {
       const heading = parseHeading(line);
+      if (heading) {
+        return heading;
+      }
+
       const inline = parseInline(line);
-      console.log(heading || `<p>${inline}</p>`);
-      return heading || `<p>${inline}</p>`;
+      return `<p>${inline}</p>`;
     })
-    .join("<br>");
-}
+    .join("");
+};
 
 function Home() {
   const [data, setData] = useState("");
 
   const handleText = (e) => {
-    setData(parseMdToHtml(e.target.value));
+    const html = parseMdToHtml(e.target.value);
+    setData(html);
   };
 
   return (
