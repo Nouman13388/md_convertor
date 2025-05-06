@@ -30,6 +30,7 @@ const parseInline = (line) => {
   processed = replaceItalic(processed);
   processed = replaceImage(processed);
   processed = replaceLink(processed);
+  // processed = replaceTable(processed);
   console.log("Processed Line: ", processed);
   return processed;
 };
@@ -206,6 +207,32 @@ const replaceImage = (text) => {
 
   return result;
 };
+
+
+// const replaceTable = (line) => {
+//   let result = "";
+//   let i = 0;
+//   let stack = [];
+
+//   while (i < line.length) {
+//     if (line[i] === "|") {
+//       if (stack.length > 0 && stack[stack.length - 1] === "|") {
+//         result += `</td>`;
+//         stack.pop();
+//       } else {
+//         result += `<td>`;
+//         stack.push("|");
+//       }
+//       i++;
+//     } else {
+//       result += line[i];
+//       i++;
+//     }
+//   }
+
+//   return result;
+// };
+
 
 const parseMdToHtml = (text) => {
   return text

@@ -31,8 +31,7 @@ textarea {
   margin: 0 auto;
 }
 
-.editor,
-.preview {
+.editor {
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -41,5 +40,28 @@ textarea {
   background-color: #fff;
   padding: 1rem;
   overflow: auto;
-  /* overflow: hidden; */
+}
+.preview {
+  display: flex;
+  flex-direction: row;
+  width: 50%;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.table-grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-grid tr {
+  border-bottom: 1px solid #eee;
+}
+
+.table-grid td {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
 }
